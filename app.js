@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-
 const routes = require("./routes");
+const generateInvertedIndex = require("./inverted-index");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +24,7 @@ app.use(
 app.use("/", routes);
 
 console.log("App has been initialised.");
+generateInvertedIndex();
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
