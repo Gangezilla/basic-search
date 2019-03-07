@@ -6,7 +6,6 @@ const routes = require("./routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-dotenv.config();
 
 app.use(helmet());
 
@@ -29,3 +28,5 @@ console.log("App has been initialised.");
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
+
+// for now lets just store then docs in memory when we start the server, bit shit but its ok for now.
