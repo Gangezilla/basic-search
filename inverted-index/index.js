@@ -11,7 +11,6 @@ const stemmer = new Snowball("English");
 
 const processDocuments = () => {
   const dir = path.join(__dirname + "/../documents");
-  console.log(dir);
   fs.readdir(dir, (err, files) => {
     files.forEach(file => {
       const content = JSON.parse(fs.readFileSync(dir + "/" + file));
