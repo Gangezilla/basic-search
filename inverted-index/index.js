@@ -15,6 +15,8 @@ const calculateTokenFrequency = tokens => {
   return sortedTokens;
 };
 
+const tokenizeText = text => text.split(" ");
+
 const normaliseText = text =>
   text.toLowerCase().replace(/[.,\/#!?$%\^&\*;:\[\]{}=\-_`~()"']/gm, "");
 
@@ -24,7 +26,7 @@ const processDocuments = () => {
     try {
       files.forEach(file => {
         const newPath = path.join(
-          __dirname + `/../indexes/${file.split(".")[0]}.index`
+          __dirname + `/../term-doc-frequencies/${file.split(".")[0]}.index`
         );
         natural.PorterStemmer.attach();
         natural.LancasterStemmer.attach();
@@ -44,3 +46,5 @@ const processDocuments = () => {
 };
 
 module.exports = processDocuments;
+
+// would like to write a stemmer and tokenizer tho.
