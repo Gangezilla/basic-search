@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const natural = require("natural");
-const { stemmer } = require("./stemmer");
+const { stemmer } = require("porter-port");
 
-console.log(stemmer("sing"));
+console.log(stemmer("guidance"));
 
 const calculateTokenFrequency = tokens => {
   const unsortedTokens = tokens.reduce((count, word) => {
