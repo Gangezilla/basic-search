@@ -1,4 +1,13 @@
-const { step1A, step1B, step1C, step2 } = require("./stemmer");
+const {
+  step1A,
+  step1B,
+  step1C,
+  step2,
+  step3,
+  step4,
+  step5,
+  stemmer
+} = require("./stemmer");
 
 describe("stemmer", () => {
   describe("step 1", () => {
@@ -172,6 +181,174 @@ describe("stemmer", () => {
 
     test("sensibiliti -> sensible", () => {
       expect(step2("sensibiliti")).toBe("sensible");
+    });
+  });
+
+  describe("step 3", () => {
+    test("triplicate -> triplic", () => {
+      expect(step3("triplicate")).toBe("triplic");
+    });
+
+    test("formative -> form", () => {
+      expect(step3("formative")).toBe("form");
+    });
+
+    test("electriciti -> electricit", () => {
+      expect(step3("electriciti")).toBe("electric");
+    });
+
+    test("electrical -> electric", () => {
+      expect(step3("electrical")).toBe("electric");
+    });
+
+    test("hopeful -> hope", () => {
+      expect(step3("hopeful")).toBe("hope");
+    });
+
+    test("goodness -> good", () => {
+      expect(step3("goodness")).toBe("good");
+    });
+  });
+
+  describe("step 4", () => {
+    test("revival -> reviv", () => {
+      expect(step4("revival")).toBe("reviv");
+    });
+
+    test("allowance -> allow", () => {
+      expect(step4("allowance")).toBe("allow");
+    });
+
+    test("inference -> infer", () => {
+      expect(step4("inference")).toBe("infer");
+    });
+
+    test("airliner -> airlin", () => {
+      expect(step4("airliner")).toBe("airlin");
+    });
+
+    test("gyroscopic -> gyroscop", () => {
+      expect(step4("gyroscopic")).toBe("gyroscop");
+    });
+
+    test("adjustable -> adjust", () => {
+      expect(step4("adjustable")).toBe("adjust");
+    });
+
+    test("defensible -> defens", () => {
+      expect(step4("defensible")).toBe("defens");
+    });
+
+    test("irritant -> irrit", () => {
+      expect(step4("irritant")).toBe("irrit");
+    });
+
+    test("replacement -> replac", () => {
+      expect(step4("replacement")).toBe("replac");
+    });
+
+    test("adjustment -> adjust", () => {
+      expect(step4("adjustment")).toBe("adjust");
+    });
+
+    test("dependent -> depend", () => {
+      expect(step4("dependent")).toBe("depend");
+    });
+
+    test("adoption -> adoption", () => {
+      expect(step4("adoption")).toBe("adopt");
+    });
+
+    test("homologou -> homolog", () => {
+      expect(step4("homologou")).toBe("homolog");
+    });
+
+    test("communism -> commun", () => {
+      expect(step4("communism")).toBe("commun");
+    });
+
+    test("activate -> activ", () => {
+      expect(step4("activate")).toBe("activ");
+    });
+
+    test("angulariti -> angular", () => {
+      expect(step4("angulariti")).toBe("angular");
+    });
+
+    test("homologous -> homolog", () => {
+      expect(step4("homologous")).toBe("homolog");
+    });
+
+    test("effective -> effect", () => {
+      expect(step4("effective")).toBe("effect");
+    });
+
+    test("bowdlerize -> bowdler", () => {
+      expect(step4("bowdlerize")).toBe("bowdler");
+    });
+  });
+
+  describe("step5", () => {
+    test("probate -> probat", () => {
+      expect(step5("probate")).toBe("probat");
+    });
+
+    test("rate -> rate", () => {
+      expect(step5("rate")).toBe("rate");
+    });
+
+    test("cease -> ceas", () => {
+      expect(step5("cease")).toBe("ceas");
+    });
+
+    test("controll -> control", () => {
+      expect(step5("controll")).toBe("control");
+    });
+
+    test("roll -> roll", () => {
+      expect(step5("roll")).toBe("roll");
+    });
+  });
+
+  describe("general stemming", () => {
+    test("relate -> relat", () => {
+      expect(stemmer("relate")).toBe("relat");
+    });
+
+    test("derivate -> deriv", () => {
+      expect(stemmer("derivate")).toBe("deriv");
+    });
+
+    test("probate -> probat", () => {
+      expect(stemmer("probate")).toBe("probat");
+    });
+
+    test("activate -> activ", () => {
+      expect(stemmer("activate")).toBe("activ");
+    });
+
+    test("conflate -> conflat", () => {
+      expect(stemmer("conflate")).toBe("conflat");
+    });
+
+    test("demonstrate -> demonstrat", () => {
+      expect(stemmer("demonstrate")).toBe("demonstr");
+    });
+
+    test("pirate -> pirat", () => {
+      expect(stemmer("pirate")).toBe("pirat");
+    });
+
+    test("necessitate -> necessit", () => {
+      expect(stemmer("necessitate")).toBe("necessit");
+    });
+
+    test("prelate -> prelat", () => {
+      expect(stemmer("prelate")).toBe("prelat");
+    });
+
+    test("renovate -> renov", () => {
+      expect(stemmer("renovate")).toBe("renov");
     });
   });
 });

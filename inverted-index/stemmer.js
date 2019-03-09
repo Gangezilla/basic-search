@@ -45,8 +45,7 @@ const vowelSequence = vowel + "[aeiouy]*";
 const rootRegex = `^(${consonantSequence})?`;
 //mgr0 is matchGroup0?
 const matchGroup0 = `${rootRegex}${vowelSequence}${consonantSequence}`;
-const meq1 = `${rootRegex}${vowelSequence}${consonantSequence}(${vowelSequence})?$`;
-const mgr1 = `${rootRegex}${vowelSequence}${consonantSequence}${vowelSequence}${consonantSequence}`;
+const matchGroup1 = `${rootRegex}${vowelSequence}${consonantSequence}${vowelSequence}${consonantSequence}`;
 const vowelInStem = `${rootRegex}${vowel}`;
 
 const step1A = word => {
@@ -104,7 +103,7 @@ const step1C = word => {
   let stemmedWord = word;
   const yRegex = /^(.+?)y$/;
   if (yRegex.test(word)) {
-    var matches = yRegex.exec(word);
+    const matches = yRegex.exec(word);
     const stem = matches[1];
     const vowelInStemRegex = new RegExp(vowelInStem);
     if (vowelInStemRegex.test(stem)) {
@@ -116,9 +115,9 @@ const step1C = word => {
 
 const step2 = word => {
   let stemmedWord = word;
-  const step2Regex = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
-  if (step2Regex.test(word)) {
-    const [_, stem, suffix] = step2Regex.exec(word);
+  const regex = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
+  if (regex.test(word)) {
+    const [_, stem, suffix] = regex.exec(word);
     const matchGroupRegex = new RegExp(matchGroup0);
     if (matchGroupRegex.test(stem)) {
       stemmedWord = stem + step2List[suffix];
@@ -127,14 +126,65 @@ const step2 = word => {
   return stemmedWord;
 };
 
+const step3 = word => {
+  let stemmedWord = word;
+  const regex = (re = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/);
+  if (regex.test(word)) {
+    const [_, stem, suffix] = regex.exec(word);
+    const matchGroupRegex = new RegExp(matchGroup0);
+    if (matchGroupRegex.test(stem)) {
+      stemmedWord = stem + step3List[suffix];
+    }
+  }
+  return stemmedWord;
+};
+
+const step4 = word => {
+  let stemmedWord = word;
+  const re = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/;
+  const re2 = /^(.+?)(s|t)(ion)$/;
+  const matchGroupRe = new RegExp(matchGroup1);
+  if (re.test(word)) {
+    const matches = re.exec(word);
+    stem = matches[1];
+    if (matchGroupRe.test(stem)) {
+      stemmedWord = stem;
+    }
+  } else if (re2.test(word)) {
+    const matches = re2.exec(word);
+    stem = matches[1] + matches[2];
+    if (matchGroupRe.test(stem)) {
+      stemmedWord = stem;
+    }
+  }
+  return stemmedWord;
+};
+
+const step5 = word => {
+  let stemmedWord = word;
+  const matchGroupRe = new RegExp(matchGroup1);
+  const re = /^(.+?)e$/;
+  if (re.test(word)) {
+    const matches = re.exec(word);
+    stem = matches[1];
+    const re2 = new RegExp(
+      `${rootRegex}${vowelSequence}${consonantSequence}(${vowelSequence})?$`
+    );
+    const re3 = new RegExp("^" + consonantSequence + vowel + "[^aeiouwxy]$");
+    if (matchGroupRe.test(stem) || (re2.test(stem) && !re3.test(stem))) {
+      stemmedWord = stem;
+    }
+  }
+
+  const doubleLRegex = /ll$/;
+  if (doubleLRegex.test(word) && matchGroupRe.test(word)) {
+    stemmedWord = stemmedWord.replace(/.$/, "");
+  }
+
+  return stemmedWord;
+};
+
 const stemmer = originalWord => {
-  let stem;
-  let suffix;
-  let firstch;
-  let re;
-  let re2;
-  let re3;
-  let re4;
   let word = originalWord;
 
   if (word.length < 3) {
@@ -149,6 +199,10 @@ const stemmer = originalWord => {
   word = step1A(word);
   word = step1B(word);
   word = step1C(word);
+  word = step2(word);
+  word = step3(word);
+  word = step4(word);
+  word = step5(word);
 
   return word;
 };
@@ -158,5 +212,8 @@ module.exports = {
   step1B,
   step1C,
   step2,
+  step3,
+  step4,
+  step5,
   stemmer
 };
