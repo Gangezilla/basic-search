@@ -1,93 +1,177 @@
-const { step1A, step1B, step1C } = require("./stemmer");
+const { step1A, step1B, step1C, step2 } = require("./stemmer");
 
 describe("stemmer", () => {
-  describe("step1A", () => {
-    test("ponies -> poni", () => {
-      expect(step1A("ponies")).toBe("poni");
+  describe("step 1", () => {
+    describe("step1A", () => {
+      test("ponies -> poni", () => {
+        expect(step1A("ponies")).toBe("poni");
+      });
+
+      test("ties -> ti", () => {
+        expect(step1A("ties")).toBe("ti");
+      });
+
+      test("caress -> caress", () => {
+        expect(step1A("caress")).toBe("caress");
+      });
+
+      test("cats -> cat", () => {
+        expect(step1A("cats")).toBe("cat");
+      });
     });
 
-    test("ties -> ti", () => {
-      expect(step1A("ties")).toBe("ti");
+    describe("step1B", () => {
+      test("feed -> feed", () => {
+        expect(step1B("feed")).toBe("feed");
+      });
+
+      test("agreed -> agree", () => {
+        expect(step1B("agreed")).toBe("agree");
+      });
+
+      test("plastered -> plaster", () => {
+        expect(step1B("plastered")).toBe("plaster");
+      });
+
+      test("bled -> bled", () => {
+        expect(step1B("bled")).toBe("bled");
+      });
+
+      test("motoring -> motor", () => {
+        expect(step1B("motoring")).toBe("motor");
+      });
+
+      test("sing -> sing", () => {
+        expect(step1B("sing")).toBe("sing");
+      });
+
+      test("troubled -> trouble", () => {
+        expect(step1B("troubled")).toBe("trouble");
+      });
+
+      test("sized -> size", () => {
+        expect(step1B("sized")).toBe("size");
+      });
+
+      test("hopping -> hop", () => {
+        expect(step1B("hopping")).toBe("hop");
+      });
+
+      test("tanned -> tan", () => {
+        expect(step1B("tanned")).toBe("tan");
+      });
+
+      test("falling -> fall", () => {
+        expect(step1B("falling")).toBe("fall");
+      });
+
+      test("hissing -> hiss", () => {
+        expect(step1B("hissing")).toBe("hiss");
+      });
+
+      test("fizzed -> fizz", () => {
+        expect(step1B("fizzed")).toBe("fizz");
+      });
+
+      test("failing -> fail", () => {
+        expect(step1B("failing")).toBe("fail");
+      });
+
+      test("filing -> file", () => {
+        expect(step1B("filing")).toBe("file");
+      });
     });
 
-    test("caress -> caress", () => {
-      expect(step1A("caress")).toBe("caress");
-    });
+    describe("step1C", () => {
+      test("happy -> happi", () => {
+        expect(step1C("happy")).toBe("happi");
+      });
 
-    test("cats -> cat", () => {
-      expect(step1A("cats")).toBe("cat");
+      test("sky -> sky", () => {
+        expect(step1C("sky")).toBe("sky");
+      });
     });
   });
 
-  describe("step1B", () => {
-    test("feed -> feed", () => {
-      expect(step1B("feed")).toBe("feed");
+  describe("step2", () => {
+    test("relational -> relate", () => {
+      expect(step2("relational")).toBe("relate");
     });
 
-    test("agreed -> agree", () => {
-      expect(step1B("agreed")).toBe("agree");
+    test("rational -> rational", () => {
+      expect(step2("rational")).toBe("rational");
     });
 
-    test("plastered -> plaster", () => {
-      expect(step1B("plastered")).toBe("plaster");
+    test("valenci -> valence", () => {
+      expect(step2("valenci")).toBe("valence");
     });
 
-    test("bled -> bled", () => {
-      expect(step1B("bled")).toBe("bled");
+    test("hesitanci -> hesitance", () => {
+      expect(step2("hesitanci")).toBe("hesitance");
     });
 
-    test("motoring -> motor", () => {
-      expect(step1B("motoring")).toBe("motor");
+    test("digitizer -> digitize", () => {
+      expect(step2("digitizer")).toBe("digitize");
     });
 
-    test("sing -> sing", () => {
-      expect(step1B("sing")).toBe("sing");
+    test("conformabli -> conformable", () => {
+      expect(step2("conformabli")).toBe("conformable");
     });
 
-    test("troubled -> trouble", () => {
-      expect(step1B("troubled")).toBe("trouble");
+    test("radicalli -> radical", () => {
+      expect(step2("radicalli")).toBe("radical");
     });
 
-    test("sized -> size", () => {
-      expect(step1B("sized")).toBe("size");
+    test("differentli -> different", () => {
+      expect(step2("differentli")).toBe("different");
     });
 
-    test("hopping -> hop", () => {
-      expect(step1B("hopping")).toBe("hop");
+    test("vileli -> vile", () => {
+      expect(step2("vileli")).toBe("vile");
     });
 
-    test("tanned -> tan", () => {
-      expect(step1B("tanned")).toBe("tan");
+    test("analogousli -> analagous", () => {
+      expect(step2("analogousli")).toBe("analogous");
     });
 
-    test("falling -> fall", () => {
-      expect(step1B("falling")).toBe("fall");
+    test("vietnamization -> vietnamize", () => {
+      expect(step2("vietnamization")).toBe("vietnamize");
     });
 
-    test("hissing -> hiss", () => {
-      expect(step1B("hissing")).toBe("hiss");
+    test("predication -> predicate", () => {
+      expect(step2("predication")).toBe("predicate");
     });
 
-    test("fizzed -> fizz", () => {
-      expect(step1B("fizzed")).toBe("fizz");
+    test("operator -> operate", () => {
+      expect(step2("operator")).toBe("operate");
     });
 
-    test("failing -> fail", () => {
-      expect(step1B("failing")).toBe("fail");
+    test("feudalism -> feudal", () => {
+      expect(step2("feudalism")).toBe("feudal");
     });
 
-    test("filing -> file", () => {
-      expect(step1B("filing")).toBe("file");
-    });
-  });
-
-  describe("step1C", () => {
-    test("happy -> happi", () => {
-      expect(step1C("happy")).toBe("happi");
+    test("decisiveness -> decisive", () => {
+      expect(step2("decisiveness")).toBe("decisive");
     });
 
-    test("sky -> sky", () => {
-      expect(step1C("sky")).toBe("sky");
+    test("hopefulness -> hopeful", () => {
+      expect(step2("hopefulness")).toBe("hopeful");
+    });
+
+    test("callousness -> callous", () => {
+      expect(step2("callousness")).toBe("callous");
+    });
+
+    test("formaliti -> formal", () => {
+      expect(step2("formaliti")).toBe("formal");
+    });
+
+    test("sensitiviti -> sensitive", () => {
+      expect(step2("sensitiviti")).toBe("sensitive");
+    });
+
+    test("sensibiliti -> sensible", () => {
+      expect(step2("sensibiliti")).toBe("sensible");
     });
   });
 });

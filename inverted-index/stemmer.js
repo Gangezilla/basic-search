@@ -114,6 +114,19 @@ const step1C = word => {
   return stemmedWord;
 };
 
+const step2 = word => {
+  let stemmedWord = word;
+  const step2Regex = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
+  if (step2Regex.test(word)) {
+    const [_, stem, suffix] = step2Regex.exec(word);
+    const matchGroupRegex = new RegExp(matchGroup0);
+    if (matchGroupRegex.test(stem)) {
+      stemmedWord = stem + step2List[suffix];
+    }
+  }
+  return stemmedWord;
+};
+
 const stemmer = originalWord => {
   let stem;
   let suffix;
@@ -144,5 +157,6 @@ module.exports = {
   step1A,
   step1B,
   step1C,
+  step2,
   stemmer
 };
