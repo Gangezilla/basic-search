@@ -44,5 +44,3 @@ const processDocuments = () => {
 };
 
 module.exports = processDocuments;
-
-// // fs.appendFileSync("./formatted-styles", styles);
