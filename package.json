@@ -10,6 +10,7 @@
     "dotenv": "^6.2.0",
     "express": "^4.14.1",
     "helmet": "^3.15.1",
+    "jsonfile": "^5.0.0",
     "natural": "^0.6.3",
     "porter-port": "^1.0.0",
     "react": "^16.2.0",
@@ -31,7 +32,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "watch": "nodemon app.js",
+    "watch": "nodemon app.js -e js",
     "test:watch": "jest --watch",
     "migrate": "node-pg-migrate"
   }

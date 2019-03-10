@@ -1,9 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const natural = require("natural");
 const { stemmer } = require("porter-port");
-
-console.log(stemmer("guidance"));
+const jsonFile = require("jsonfile");
 
 const calculateTokenFrequency = tokens => {
   const unsortedTokens = tokens.reduce((count, word) => {
@@ -29,25 +27,26 @@ const processDocuments = () => {
     try {
       files.forEach(file => {
         const newPath = path.join(
-          __dirname + `/../term-doc-frequencies/${file.split(".")[0]}.index`
+          __dirname + `/../term-doc-frequencies/${file.split(".")[0]}.json`
         );
-        natural.PorterStemmer.attach();
-        natural.LancasterStemmer.attach();
-
+        const docId = files.findIndex(fileIndex => fileIndex === file);
         const content = JSON.parse(fs.readFileSync(dir + "/" + file));
         const normalisedText = normaliseText(content.text);
-        const stemmedText = normalisedText.tokenizeAndStem();
-        const index = calculateTokenFrequency(stemmedText);
-        fs.writeFile(newPath, JSON.stringify(index, null, 2), (err, _data) => {
-          if (err) throw err;
+        const tokenizedText = tokenizeText(normalisedText);
+        const stemmedText = tokenizedText.map(word => stemmer(word));
+        const termDocFreqIndex = calculateTokenFrequency(stemmedText);
+        const toWrite = {
+          docId: docId,
+          content: termDocFreqIndex
+        };
+        jsonFile.writeFile(newPath, toWrite, { spaces: 2 }, function(err) {
+          if (err) console.error(err);
         });
       });
     } catch (err) {
-      console.error("Something went wrong sorry!", err);
+      console.error("Something went wrong, sorry!", err);
     }
   });
 };
 
 module.exports = processDocuments;
-
-// would like to write a stemmer and tokenizer tho.
