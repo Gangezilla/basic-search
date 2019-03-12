@@ -29,12 +29,13 @@ const processDocuments = () => {
         const newPath = path.join(
           __dirname + `/../term-doc-frequencies/${file.split(".")[0]}.json`
         );
-        const docId = files.findIndex(fileIndex => fileIndex === file);
         const content = JSON.parse(fs.readFileSync(dir + "/" + file));
         const normalisedText = normaliseText(content.text);
         const tokenizedText = tokenizeText(normalisedText);
         const stemmedText = tokenizedText.map(word => stemmer(word));
         const termDocFreqIndex = calculateTokenFrequency(stemmedText);
+        const docId = content.id;
+        console.log(docId);
         const toWrite = {
           docId: docId,
           content: termDocFreqIndex
