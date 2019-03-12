@@ -5,9 +5,11 @@ const routes = require("./routes");
 const generateTermDocumentFrequencies = require("./src/termDocumentFrequency");
 const generateInvertedIndex = require("./src/invertedIndex");
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+global.documentIndex = {};
 
 const initDocuments = () => {
   console.log("Documents out of sync, rebuilding documents");
@@ -34,6 +36,18 @@ app.use("/", routes);
 
 const docsPromise = new Promise(resolve => {
   fs.readdir("./documents", (err, files) => {
+    files.forEach(file => {
+      const dir = path.join(__dirname + "/documents");
+      const content = JSON.parse(fs.readFileSync(dir + "/" + file));
+      // put all documents in a document index so we know which one to access later
+      // bit crap that its here, and not in the termDocumentFrequency when we're reading the files
+      // means we're double dipping but its ok for now.
+      global.documentIndex = Object.assign(global.documentIndex, {
+        [content.id]: {
+          filename: path.join(__dirname + "/documents/" + file)
+        }
+      });
+    });
     resolve(files.length);
   });
 });

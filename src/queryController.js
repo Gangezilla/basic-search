@@ -1,56 +1,66 @@
-const parseQuery = query => {};
+const fs = require("fs");
+
+const findPostings = query => {
+  // O(n^2) but its ok for now
+  const invertedIndex = global.invertedIndex;
+  const parsedQuery = query.toLowerCase().split(" ");
+  let tempIndex = {};
+  Object.keys(invertedIndex).forEach(term => {
+    parsedQuery.forEach(queryTerm => {
+      if (term === queryTerm) {
+        tempIndex = Object.assign(tempIndex, {
+          [term]: invertedIndex[term]
+        });
+      }
+    });
+  });
+  return tempIndex;
+};
+
+const findCommonPostings = postings => {
+  // finding all occurences of each matched word
+  const allPostings = Object.keys(postings).map(
+    term => postings[term].postings_list
+  );
+
+  // flattening the array and counting the number of occurences
+  const flattenedPostings = [].concat.apply([], allPostings);
+  const count = {};
+  flattenedPostings.forEach(num => {
+    count[num] = count[num] ? count[num] + 1 : 1;
+  });
+
+  // find elements that appear the same number of times as the input arrays,
+  // this will show us if the term has appeared in all the documents documents
+  const numberOfMatchingDocuments = Object.keys(postings).length;
+  const results = Object.keys(count).filter(
+    num => count[num] >= numberOfMatchingDocuments
+  );
+
+  return results;
+};
+
+const getTermsInDocument = documents => {
+  let termIndex = {};
+  documents.forEach(doc => {
+    fs.readFile(doc, "utf-8", (err, data) => {
+      const content = JSON.parse(data);
+      // console.log(content);
+    });
+  });
+};
 
 const handleQuery = (req, res) => {
-  const invertedIndex = global.invertedIndex;
   const query = req.body.query;
-  const isSingleWord = query.match(/NOT|OR|AND/);
-  const onlyAnd = query.match(/^((?!(OR|NOT)).)*$/);
-  const onlyOr = query.match(/^((?!(NOT|AND)).)*$/);
-  if (isSingleWord === null) {
-    const normalisedQuery = query.toLowerCase();
-    const location = invertedIndex[normalisedQuery];
-    if (location) {
-      res.status(200);
-      res.json(location);
-    } else {
-      res.sendStatus(404);
-    }
-  } else if (onlyAnd) {
-    const normalisedQuery = query
-      .split("AND")
-      .map(term => term.toLowerCase().trim());
-    console.log(normalisedQuery);
-    Object.keys(invertedIndex).forEach(term => {
-      // console.log(term);
-    });
-    res.sendStatus(200);
-  }
-  // parseQuery(query);
+  postings = findPostings(query);
+  commonPostings = findCommonPostings(postings);
+  const documents = commonPostings.map(
+    num => global.documentIndex[num].filename
+  );
+  console.log(postings);
+  getTermsInDocument(documents);
+
+  res.sendStatus(200);
 };
-// one word
-// multiple words with AND
-// multiple words with OR
-// multiple words with NOT
-// probably need to clean the query up a bit, do it here and then maybe do it on the FE later?
-// or just do it here, then send the cleaned query to the FE and display it there.
-// split by AND and OR then lowercase
-
-// if we've only got AND, then we find the indexes for each term in the index, then get the intersection
-// if we've only got OR then we find the indexes for each term in the index, then get the diff
-// if we've only got NOT then we find the indexes for each term in the index... dunno...
-// anyway, if we get these, we can then start splitting the query up using some regex magic, or like some bigram sorta shit
-// then stitch it together.
-
-// for (var key in myObj){
-//   if (key == selUser){
-//       for (var date in myObj[key]["dates & times"]){
-//           console.log("Date: " + date + "; " + "weight: " + myObj[key]["dates & times"][date]);
-//           var dtTag = "<dt class=\"date\"><span>Date: </span>" + date + " </dt>";
-//           var ddTag = "<dd class=\"value\"><span>Time: </span>" + myObj[key]["dates & times"][date] + "</dd>";
-//           output.innerHTML += dtTag;
-//           output.innerHTML += ddTag;
-//       }
-//   } // if
-// }
 
 module.exports = handleQuery;
