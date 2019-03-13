@@ -2,14 +2,16 @@ const fs = require("fs");
 
 const findPostings = query => {
   // O(n^2) but its ok for now
-  const invertedIndex = global.invertedIndex;
+  // plus i get this gut feeling that accessing the global object is bad
+  // but its probably less bad than doing a file read every query.
+  const invertedIndex = JSON.parse(global.invertedIndex);
   const parsedQuery = query.toLowerCase().split(" ");
   let tempIndex = {};
   Object.keys(invertedIndex).forEach(term => {
     parsedQuery.forEach(queryTerm => {
       if (term === queryTerm) {
         tempIndex = Object.assign(tempIndex, {
-          [term]: invertedIndex[term]
+          [queryTerm]: invertedIndex[term]
         });
       }
     });
@@ -52,12 +54,13 @@ const getTermsInDocument = documents => {
 
 const handleQuery = (req, res) => {
   const query = req.body.query;
-  postings = findPostings(query);
-  commonPostings = findCommonPostings(postings);
+  const postings = findPostings(query);
+  const commonPostings = findCommonPostings(postings);
+  console.log(commonPostings);
   const documents = commonPostings.map(
     num => global.documentIndex[num].filename
   );
-  console.log(postings);
+  console.log(documents);
   getTermsInDocument(documents);
 
   res.sendStatus(200);
