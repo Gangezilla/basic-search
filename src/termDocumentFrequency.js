@@ -1,7 +1,7 @@
-const fs = require("fs");
 const path = require("path");
 const { stemmer } = require("porter-port");
 const jsonFile = require("jsonfile");
+const { readdirAsync, readFileAsync } = require("./helpers");
 
 const calculateTokenFrequency = tokens => {
   const unsortedTokens = tokens.reduce((count, word) => {
@@ -23,31 +23,35 @@ const normaliseText = text =>
 
 const processDocuments = () => {
   const dir = path.join(__dirname + "/../documents");
-  fs.readdir(dir, (err, files) => {
-    try {
+  readdirAsync(dir)
+    .then(filenames => {
+      const pathName = filename =>
+        path.join(__dirname + "/../documents/" + filename);
+
+      return Promise.all(
+        filenames.map(filename => readFileAsync(pathName(filename)))
+      );
+    })
+    .then(files => {
       files.forEach(file => {
+        const content = JSON.parse(file);
         const newPath = path.join(
-          __dirname + `/../term-doc-frequencies/${file.split(".")[0]}.json`
+          __dirname + `/../term-doc-frequencies/${content.filename}`
         );
-        const content = JSON.parse(fs.readFileSync(dir + "/" + file));
         const normalisedText = normaliseText(content.text);
         const tokenizedText = tokenizeText(normalisedText);
         const stemmedText = tokenizedText.map(word => stemmer(word));
         const termDocFreqIndex = calculateTokenFrequency(stemmedText);
         const docId = content.id;
-        console.log(docId);
         const toWrite = {
           docId: docId,
           content: termDocFreqIndex
         };
-        jsonFile.writeFile(newPath, toWrite, { spaces: 2 }, function(err) {
+        jsonFile.writeFile(newPath, toWrite, { spaces: 2 }, err => {
           if (err) console.error(err);
         });
       });
-    } catch (err) {
-      console.error("Something went wrong, sorry!", err);
-    }
-  });
+    });
 };
 
 module.exports = processDocuments;

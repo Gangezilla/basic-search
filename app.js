@@ -58,15 +58,19 @@ const docFreqPromise = new Promise(resolve => {
   });
 });
 
-Promise.all([docsPromise, docFreqPromise]).then(values => {
-  [docsLength, docFreqLength] = values;
-  if (docsLength !== docFreqLength) initDocuments();
+const invertedIndexPromise = new Promise(resolve => {
+  fs.readFile("./inverted-index/index.json", "utf-8", (err, data) => {
+    if (err) throw err;
+    resolve(data);
+  });
 });
 
-fs.readFile("./inverted-index/index.json", "utf-8", (err, data) => {
-  if (err) console.error("panic time");
-  global.invertedIndex = JSON.parse(data);
-});
+Promise.all([docsPromise, docFreqPromise, invertedIndexPromise]).then(
+  values => {
+    [docsLength, docFreqLength, invertedIndex] = values;
+    if (docsLength !== docFreqLength || !invertedIndex) initDocuments();
+  }
+);
 
 console.log("App has been initialised.");
 
