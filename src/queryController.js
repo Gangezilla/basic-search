@@ -53,24 +53,23 @@ const getTermsInDocument = (filenames, queryTerms, resolve) => {
         const splitText = text.split(" ");
         const splitNormalisedText = text.toLowerCase().split(" ");
         const stemmedText = splitNormalisedText.map(term => stemmer(term));
-        const tempIndex = queryTerms.reduce((acc, term) => {
+        queryTerms.reduce((acc, term) => {
           const firstOccurence = stemmedText.findIndex(text => text === term);
-          let temp = {};
-          if (term) {
-            const termList = splitText.slice(
-              firstOccurence - 5,
-              firstOccurence + 6
-            );
-            termList[5] = `<mark>${termList[5]}</mark>`;
-            temp = Object.assign(acc, {
+          const termList = splitText.slice(
+            firstOccurence - 5,
+            firstOccurence + 6
+          );
+          termList[5] = `<mark>${termList[5]}</mark>`;
+          if (acc.hasOwnProperty(documentName)) {
+            return (acc[documentName][term] = termList.join(" "));
+          } else {
+            return Object.assign(acc, {
               [documentName]: {
                 [term]: termList.join(" ")
               }
             });
           }
-          return temp;
         }, termIndex);
-        termIndex = Object.assign(termIndex, tempIndex);
       });
       resolve(termIndex);
     }
