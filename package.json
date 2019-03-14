@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": false,
   "jest": {},
+  "engines": {
+    "node": "11.10.1"
+  },
   "dependencies": {
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "body-parser": "^1.18.3",
