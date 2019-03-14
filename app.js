@@ -48,22 +48,6 @@ const initDocuments = () => {
   console.log("Rebuilding documents complete");
 };
 
-// app.use(helmet());
-
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true
-//   })
-// );
-
-// app.use(
-//   bodyParser.json({
-//     limit: "5mb"
-//   })
-// );
-
-// app.use("/", routes);
-
 const docsPromise = new Promise(resolve => {
   fs.readdir("./documents", (err, files) => {
     files.forEach(file => {
