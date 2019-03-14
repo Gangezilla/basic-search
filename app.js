@@ -58,7 +58,8 @@ const docsPromise = new Promise(resolve => {
       // means we're double dipping but its ok for now.
       global.documentIndex = Object.assign(global.documentIndex, {
         [content.id]: {
-          filename: path.join(__dirname + "/documents/" + file)
+          filename: path.join(__dirname + "/documents/" + file),
+          documentName: content.title
         }
       });
     });

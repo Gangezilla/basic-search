@@ -50,6 +50,7 @@ const getTermsInDocument = (filenames, queryTerms, resolve) => {
         const parsedFile = JSON.parse(file);
         const documentName = parsedFile.title;
         const text = parsedFile.text;
+
         const splitText = text.split(" ");
         const splitNormalisedText = text.toLowerCase().split(" ");
         const stemmedText = splitNormalisedText.map(term => stemmer(term));
@@ -78,17 +79,30 @@ const getTermsInDocument = (filenames, queryTerms, resolve) => {
 
 const handleQuery = (req, res) => {
   const query = req.body.query;
+  const documentIndex = global.documentIndex;
+
   const postings = findPostings(query);
   const commonPostings = findCommonPostings(postings);
   const matchedPhrases = Object.keys(postings);
-  const filenames = commonPostings.map(
-    num => global.documentIndex[num].filename
-  );
+
+  const filenames = commonPostings.map(num => documentIndex[num].filename);
+
   const finalResultPromise = new Promise(resolve => {
     getTermsInDocument(filenames, matchedPhrases, resolve);
   });
+
+  const documentNames = Object.keys(documentIndex).reduce((acc, key) => {
+    acc = Object.assign(acc, {
+      [key]: documentIndex[key].documentName
+    });
+    return acc;
+  }, {});
+  const unmatchedPhrases = query
+    .split(" ")
+    .filter(x => !matchedPhrases.includes(x));
+
   Promise.resolve(finalResultPromise).then(result =>
-    res.status(200).send(result)
+    res.status(200).send({ result, postings, documentNames, unmatchedPhrases })
   );
 };
 
