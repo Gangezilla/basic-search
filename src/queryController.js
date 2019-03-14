@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { readFileAsync } = require("./helpers");
+const { stemmer } = require("porter-port");
 
 const findPostings = query => {
   // O(n^2) but its ok for now
@@ -41,24 +42,37 @@ const findCommonPostings = postings => {
   return results;
 };
 
-const getTermsInDocument = (filenames, queryTerms) => {
+const getTermsInDocument = (filenames, queryTerms, resolve) => {
   Promise.all(filenames.map(filename => readFileAsync(filename))).then(
     files => {
+      let termIndex = {};
       files.forEach(file => {
         const parsedFile = JSON.parse(file);
+        const documentName = parsedFile.title;
         const text = parsedFile.text;
-        // console.log(text);
-        // find word(s) in text, get words around them.
-        const splitText = text.toLowerCase().split(" ");
-        // splitText.forEach(docTerm => {
-        //   queryTerms.forEach(term => {
-        //     if (docTerm === term) {
-        //       console.log("!!!!!!!!!!");
-        //     }
-        //   });
-        // });
-        console.log(splitText);
+        const splitText = text.split(" ");
+        const splitNormalisedText = text.toLowerCase().split(" ");
+        const stemmedText = splitNormalisedText.map(term => stemmer(term));
+        const tempIndex = queryTerms.reduce((acc, term) => {
+          const firstOccurence = stemmedText.findIndex(text => text === term);
+          let temp = {};
+          if (term) {
+            const termList = splitText.slice(
+              firstOccurence - 5,
+              firstOccurence + 6
+            );
+            termList[5] = `<mark>${termList[5]}</mark>`;
+            temp = Object.assign(acc, {
+              [documentName]: {
+                [term]: termList.join(" ")
+              }
+            });
+          }
+          return temp;
+        }, termIndex);
+        termIndex = Object.assign(termIndex, tempIndex);
       });
+      resolve(termIndex);
     }
   );
 };
@@ -71,10 +85,12 @@ const handleQuery = (req, res) => {
   const filenames = commonPostings.map(
     num => global.documentIndex[num].filename
   );
-  getTermsInDocument(filenames, matchedPhrases);
-  // want to also get non-matched phrases and chuck them back too.
-
-  res.sendStatus(200);
+  const finalResultPromise = new Promise(resolve => {
+    getTermsInDocument(filenames, matchedPhrases, resolve);
+  });
+  Promise.resolve(finalResultPromise).then(result =>
+    res.status(200).send(result)
+  );
 };
 
 module.exports = handleQuery;
