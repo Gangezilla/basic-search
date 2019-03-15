@@ -1,7 +1,7 @@
 const path = require("path");
 const { stemmer } = require("porter-port");
 const jsonFile = require("jsonfile");
-const { readdirAsync, readFileAsync } = require("./helpers");
+const { readdirAsync, readFileAsync } = require("../helpers");
 
 const calculateTokenFrequency = tokens => {
   const unsortedTokens = tokens.reduce((count, word) => {

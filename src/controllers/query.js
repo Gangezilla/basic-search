@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { readFileAsync } = require("./helpers");
+const { readFileAsync } = require("../helpers");
 const { stemmer } = require("porter-port");
 
 const findPostings = query => {
@@ -101,7 +101,6 @@ const handleQuery = (req, res) => {
   const matchedPhrases = Object.keys(postings);
 
   const filenames = commonPostings.map(num => documentIndex[num].filename);
-
   const finalResultPromise = new Promise(resolve => {
     getTermsInDocument(filenames, matchedPhrases, resolve);
   });

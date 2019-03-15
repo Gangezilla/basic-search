@@ -4,9 +4,9 @@ const helmet = require("helmet");
 const fs = require("fs");
 const path = require("path");
 
-const queryController = require("./src/queryController");
-const generateTermDocumentFrequencies = require("./src/termDocumentFrequency");
-const generateInvertedIndex = require("./src/invertedIndex");
+const queryController = require("./src/controllers/query");
+const generateTermDocumentFrequencies = require("./src/indexing/termDocumentFrequency");
+const generateInvertedIndex = require("./src/indexing/invertedIndex");
 
 const next = require("next");
 const dev = process.env.NODE_ENV !== "production";

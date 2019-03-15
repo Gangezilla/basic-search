@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const jsonFile = require("jsonfile");
-const { readdirAsync, readFileAsync } = require("./helpers");
+const { readdirAsync, readFileAsync } = require("../helpers");
 
 const generateInvertedIndex = () => {
   const dir = path.join(__dirname + "/../term-doc-frequencies");
