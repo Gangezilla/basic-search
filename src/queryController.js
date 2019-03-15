@@ -50,10 +50,11 @@ const getTermsInDocument = (filenames, queryTerms, resolve) => {
         const parsedFile = JSON.parse(file);
         const documentName = parsedFile.title;
         const text = parsedFile.text;
+        const splitNormalisedText = text.toLowerCase().split(" ");
 
         const splitText = text.split(" ");
-        const splitNormalisedText = text.toLowerCase().split(" ");
         const stemmedText = splitNormalisedText.map(term => stemmer(term));
+
         queryTerms.reduce((acc, term) => {
           const firstOccurence = stemmedText.findIndex(text => text === term);
           const termList = splitText.slice(
@@ -77,6 +78,20 @@ const getTermsInDocument = (filenames, queryTerms, resolve) => {
   );
 };
 
+const prepareResponse = (documentIndex, query, matchedPhrases) => {
+  const documentNames = Object.keys(documentIndex).reduce((acc, key) => {
+    acc = Object.assign(acc, {
+      [key]: documentIndex[key].documentName
+    });
+    return acc;
+  }, {});
+  const unmatchedPhrases = query
+    .split(" ")
+    .filter(x => !matchedPhrases.includes(x));
+
+  return { documentNames, unmatchedPhrases };
+};
+
 const handleQuery = (req, res) => {
   const query = req.body.query;
   const documentIndex = global.documentIndex;
@@ -91,15 +106,11 @@ const handleQuery = (req, res) => {
     getTermsInDocument(filenames, matchedPhrases, resolve);
   });
 
-  const documentNames = Object.keys(documentIndex).reduce((acc, key) => {
-    acc = Object.assign(acc, {
-      [key]: documentIndex[key].documentName
-    });
-    return acc;
-  }, {});
-  const unmatchedPhrases = query
-    .split(" ")
-    .filter(x => !matchedPhrases.includes(x));
+  const { documentNames, unmatchedPhrases } = prepareResponse(
+    documentIndex,
+    query,
+    matchedPhrases
+  );
 
   Promise.resolve(finalResultPromise).then(result =>
     res.status(200).send({ result, postings, documentNames, unmatchedPhrases })
