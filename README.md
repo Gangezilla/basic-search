@@ -1,3 +1,3 @@
 # basic-search
 
-- implementing a simple URL parser to begin with, would like to make it a bit more complex with AND NOT OR but maybe when we have a bit more time for it.
+Basic little search engine. I did a write up about it here: https://medium.com/@scottgangemi/writing-a-trivial-search-engine-e3256fa3a096
