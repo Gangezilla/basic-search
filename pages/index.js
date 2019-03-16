@@ -1,5 +1,15 @@
-import QueryBox from "../src/components/QueryBox";
 import React, { useState } from "react";
+import styled from "styled-components";
+
+import QueryBox from "../src/components/QueryBox";
+import ResultsPanel from "../src/components/ResultsPanel";
+import InvertedIndex from "../src/components/InvertedIndex";
+
+const RootContainer = styled.div`
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px;
+`;
 
 const Index = () => {
   const [data, setData] = useState("");
@@ -19,10 +29,14 @@ const Index = () => {
   };
 
   return (
-    <div>
+    <RootContainer>
       <QueryBox onSubmit={onSubmit} />
-      {data ? JSON.stringify(data) : null}
-    </div>
+      <ResultsPanel
+        results={data.result}
+        unmatchedPhrases={data.unmatchedPhrases}
+      />
+      <InvertedIndex index={data.postings} documentNames={data.documentNames} />
+    </RootContainer>
   );
 };
 export default Index;

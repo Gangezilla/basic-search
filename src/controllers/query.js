@@ -94,26 +94,32 @@ const prepareResponse = (documentIndex, query, matchedPhrases) => {
 
 const handleQuery = (req, res) => {
   const query = req.body.query;
-  const documentIndex = global.documentIndex;
+  if (query) {
+    const documentIndex = global.documentIndex;
 
-  const postings = findPostings(query);
-  const commonPostings = findCommonPostings(postings);
-  const matchedPhrases = Object.keys(postings);
+    const postings = findPostings(query);
+    const commonPostings = findCommonPostings(postings);
+    const matchedPhrases = Object.keys(postings);
 
-  const filenames = commonPostings.map(num => documentIndex[num].filename);
-  const finalResultPromise = new Promise(resolve => {
-    getTermsInDocument(filenames, matchedPhrases, resolve);
-  });
+    const filenames = commonPostings.map(num => documentIndex[num].filename);
+    const finalResultPromise = new Promise(resolve => {
+      getTermsInDocument(filenames, matchedPhrases, resolve);
+    });
 
-  const { documentNames, unmatchedPhrases } = prepareResponse(
-    documentIndex,
-    query,
-    matchedPhrases
-  );
+    const { documentNames, unmatchedPhrases } = prepareResponse(
+      documentIndex,
+      query,
+      matchedPhrases
+    );
 
-  Promise.resolve(finalResultPromise).then(result =>
-    res.status(200).send({ result, postings, documentNames, unmatchedPhrases })
-  );
+    Promise.resolve(finalResultPromise).then(result =>
+      res
+        .status(200)
+        .send({ result, postings, documentNames, unmatchedPhrases })
+    );
+  } else {
+    res.status(200).send({});
+  }
 };
 
 module.exports = handleQuery;
